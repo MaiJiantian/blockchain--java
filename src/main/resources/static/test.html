@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
+    <title>Title</title>
+</head>
+<body style="margin: 20px">
+<input type="text" id="content" class="form-control" value="aaa">
+<button class="btn btn-default btn-lg" onclick="getData()">测试</button>
+
+
+<script src="js/jquery-1.12.4.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/hashes.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/jsrsasign-all-min.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+
+    var pubkey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAptpnyR6o9uKu2Z+26tnw+q+tMi1+fpblItevNipEWUCLscvm1UWnO1LoUjkTLrGgPcniNUITVIp1eh9k1bBPxwZ2ePWu1thU3pq626yaNnKWr47wvPcIzciQJWJV2CT+RnFZJrSjcUbsp1W/NxRQLGKkh9t5cTR28QZDOe4tZyIgxvR8nWveGMy4r2tFg1caM2wuEdB2O7Ue625GDNUgW2LfH7AHJRg4oWZkCrDkqQxod420e15SVBsRmBnRNWwhtPcpxiyJPaCxjw/iajzJq3sIrOipleYlnWORMHHiWWYcdAXk2Tk62soR9KQ7gR8Q7Xi3bzS6BUeBnvXoaAZW5QIDAQAB"
+    var privkey = "-----BEGIN PRIVATE KEY-----\n" +
+        "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQD9jxj5edl+p2CeEWRbrqxixYLU\n" +
+        "PPdN3LhMNor6/v1blPsdMS4m6aZW/07EFwkxtUasu3ERc+33AsAqgHphLUSgv0wDWd4T8m1vdUYg\n" +
+        "fFWAq+Ltk8EtCIlOniSMg9FSMBcITT6thkV74+xrF7c4eBP3E/uap3CPRaLjkkTWr6QmaenYfD0S\n" +
+        "ZpjdzOfvfs5QqLFjldTC6M5SLhcToLE7t+/4vgSetA4hGU77Lm4fSVNFp/IRAsCSqUKvggcT+EpD\n" +
+        "NLxW2K+VDPaIesETtNB03SJtDjP4NioBRwRvc1EvbWbgvBsSUb5lpTaMxrF60u0txbBOO4/Xpu44\n" +
+        "garSKzbYRf9bAgMBAAECggEAW6q5H7ASljxSrLKi8pZSkh7ProUf7xFFu5/YXOeElvBkXGhkRAMi\n" +
+        "dL82LaQaWdMsatQVC3c655sh9/ucwrcH4YlnJKr/o3x4Xdwq7yGkE7GQh81sACje4wI/OmGJckoa\n" +
+        "eZDbgQZS5ng/B3R6c7rNlPyvcHjqM5G8UsOViXvUP2JAxUdcXRF7WTBOcLAV9aeIT4OcZVZLwTM9\n" +
+        "iAG+9nvVxEuldOP1bW4FjTpNQ+uNs0HYEYjfcmgCPhVfLclk7/p+BTRStYcJq9i+auluXqZWErnd\n" +
+        "3G8UlqeEHGuagg4MVIrHV90+OOLVMjbPFd0q6etOXBJ+ISAu7ZjyA0TS7irUYQKBgQD/+2QRS6jk\n" +
+        "r00OwJ/R32/H3yn52NylxvhKr5jjaqrQQu5X0Lv914KDxRIyUcXPHzt+z2mArWAeyBmQlHujDucV\n" +
+        "nmEBdZ6D31FEyhCZrUN6TMY3nCuS3o0FY29NPJqQxJVirJuiIr8VDvVSI1GAO7mU1tqvHvcbP1Ul\n" +
+        "BJL346GgMQKBgQD9k6m8+ny9is8pAnUR1rfQ3CsoD8gN4f630MoWOnoGBo03hcm1DsMuMTIWJ/wl\n" +
+        "Xyo8Ab4P4DESHjx2a6+qfCawWds0cJm1XxGJ/fGxVqu5ugC7aH09nr5rAo2++U+xgekRo3+F8UR6\n" +
+        "Z4F3lKiQMKjA38baInPQMCPDnZGcDPHhSwKBgF/l5g80sQk7QzsLntQZSN8wE6GuRLs2Vz5jmntY\n" +
+        "MrXi3Te40zS9z/9djPuc9uYpZTiUq4mxahkeDbXEaq0joB7RPrY1QjVVLDUBHkb0Shs/N+MNdqWH\n" +
+        "Cn3CSqg81Ar4Gp7k20laiwtwlyc2ZAoOVfAUrch9aUWj7Fn55LVJafuBAoGBAImzl1hVWkn/yDGH\n" +
+        "8RUH2fgkp5bwwv2u/QjK7AMYLE17X1KIZ5nX82vxMTbQ7d9Jh4DgnVq3r04cd08DeXiGROg9U4lt\n" +
+        "oDra7oZWDdr0qvqHpIAg5OoCe3tW/qx3bKyDVJLMi6Kr+zjRXoAWjVcH5YwfuTeZv/SNP86pkXoB\n" +
+        "mZRzAoGAFCCxkVat8Lq00YOqm7pLcO8SkDiE4yk8weuYk/e2TpKxaYtGgFMsLXc/UtIof7HiCbGO\n" +
+        "Yq+T8osGRS9ZFvqBkHNR7ZU1juoXjS0IYCAu2+3kSFxWACu44T2Mw/aTFPGt4DgimmOQIUgbqtLT\n" +
+        "d1oC08Ey+3igREnlqR75PTWvAUQ=\n" +
+        "-----END PRIVATE KEY-----"
+
+    function getData() {
+        var str = $("#content").val()
+        console.log(str)
+        // 获取私钥
+        var prvKey = KEYUTIL.getKey(privkey);
+        // 指定算法
+        var sig = new KJUR.crypto.Signature({"alg": "SHA256withRSA"});
+        // 初始化私钥
+        sig.init(prvKey);
+        // 传入原文
+        sig.updateString(str)
+        // 生成签名
+        var sigValueHex = sig.sign()
+        console.log(sigValueHex);
+
+    }
+
+
+</script>
+</body>
+</html>
